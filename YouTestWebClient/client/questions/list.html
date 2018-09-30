@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>List Questions</title>
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular-sanitize.js"></script>
+	<script type="text/javascript" src="../youtest.js"></script>
+	<script type="text/javascript" src="../app.js"></script>
+</head>
+<body >
+	<div ng-app="app" ng-controller="ctrl" class="container" >
+		<span><a href="/">Home</a> | <a href="add.html">Add New Question</a></span>
+		<h2>Questions : <button ng-click="load();">Load</button></h2> 
+		<div ng-repeat = "question in questions" style="margin-bottom: 15px;">
+			<h3><u>Question # {{$index + 1}}</u></h3>
+			<div class="row">
+				<div class="col col-sm-2">Creator:</div><div class="col col-sm-10"><span ng-bind-html="question.creator"></span></div>
+			</div>
+			<div class="row">
+				<div class="col col-sm-2">Question Text:</div><div class="col col-sm-10"><span ng-bind-html="question.text"></span></div>
+			</div>
+			<div>
+				<span ><b>Answer Choices: </b> </span>
+				<div class="row" ng-repeat="choice in question.choices" style="border: solid red; margin-bottom: 5px;">
+					<div class="col col-sm-1"> <span>{{$index + 1}}). </span></div>
+					<div class="col col-sm-1"> <span><input type="checkbox" ng-model="mychoice"></span></div>
+					<div class="col col-sm-10"><span ng-bind-html="choice.text"></span></div>
+				</div>
+			</div>
+		</div>
+			
+	</div>
+
+	<script type="text/javascript">
+	angular.module("app", ['ngSanitize', 'YouTest']).controller("ctrl", function($scope, yts) {
+		function init(){
+			$scope.questions = [];
+		}
+
+		$scope.load = function(){
+			alert("Loading");
+			/*// advance search
+			yts.loadQuestions(
+				{"creator": "Ritesh"}, 
+				function(questions){
+					$scope.questions = questions;
+					yts.alert(JSON.stringify("Questions loaded: " + questions.length));
+				},
+				function (error) {
+					yts.alert(JSON.stringify(error));
+			    }
+			);
+			*/
+			
+			// load all.
+			yts.loadAllQuestions(
+				function(questions){
+					$scope.questions = questions;
+					yts.alert(JSON.stringify("Questions loaded: " + questions.length));
+				},
+				function (error) {
+					yts.alert(JSON.stringify(error));
+			    }
+			);
+			
+		};
+	});
+	
+	// init
+	init();
+	</script>
+</body>
+</html>

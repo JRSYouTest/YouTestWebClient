@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Search Category</title>
+	<script
+		src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
+	<script type="text/javascript" src="../youtest.js"></script>
+	<script type="text/javascript" src="../app.js"></script>
+</head>
+<body >
+	<div ng-app="app" ng-controller="ctrl" class="container">
+		<button ng-click="toggleRecord()" ng-disabled="notSupported">{{recordLabel}}</button>
+		<br>TEXT:<span>{{searchText}}</span>
+		<!-- <br> status: <span>{{status}}</span> -->
+		<script>
+		</script>
+	</div>
+
+	<script type="text/javascript">
+	angular.module("app", ["YouTest"]).controller("ctrl", function($scope, $http, yts) {
+		  var recording = false;
+		  var recognition = null;
+		  $scope.recordLabel = "BEGIN";
+		  $scope.status = "initializing";
+		  $scope.notSupported = false;
+		  
+
+		  if (('webkitSpeechRecognition' in window) 
+				  || ('SpeechRecognition' in window)
+				  || ('mozSpeechRecognition' in window)
+				  || ('msSpeechRecognition' in window)) {
+			  var SpeechRecognition = window.SpeechRecognition || window.mozSpeechRecognition || window.msSpeechRecognition || window.webkitSpeechRecognition;
+			  //var SpeechGrammarList = SpeechGrammarList || webkitSpeechGrammarList
+			  //var SpeechRecognitionEvent = SpeechRecognitionEvent || webkitSpeechRecognitionEvent
+			  recognition = new SpeechRecognition();
+			  // var speechRecognitionList = new SpeechGrammarList();
+			  recognition.continuous = true;
+			  recognition.interimResults = true;
+
+			  recognition.onstart = function(){
+				  $scope.status = "recorded";
+			  }
+			  recognition.onresult = function(event){
+				  $scope.searchText = "result";
+				    var interim_transcript = '';
+				    for (var i = event.resultIndex; i < event.results.length; ++i) {
+				        interim_transcript += event.results[i][0].transcript;
+				    }
+				    $scope.searchText = interim_transcript;
+			  }
+			  recognition.onend = function(){
+				  $scope.status = "recording"
+			  }
+			  
+			  recognition.onerror = function(event){
+				  $scope.status = "errored"
+			  }
+		  } else {
+			  $scope.notSupported = true;
+			  alert(" speech recognition not supported");
+		  } 
+		  
+		  $scope.toggleRecord = function(){
+			  recording = !recording;
+			  if(recording){
+				  $scope.searchText = "";
+				  recognition.start();
+				  $scope.recordLabel = "STOP";
+			  } else {
+				  recognition.stop();
+				  $scope.recordLabel = "START";
+			  }
+		  }
+		  
+	});
+	</script>
+</body>
+</html>

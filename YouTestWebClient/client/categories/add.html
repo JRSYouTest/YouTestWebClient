@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Add Category</title>
+	<script
+		src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
+	<script type="text/javascript" src="../youtest.js"></script>
+	<script type="text/javascript" src="../app.js"></script>
+</head>
+<body >
+	<div ng-app="app" ng-controller="ctrl" class="container">
+		<span><a href="/">Home</a> | <a href="list.html">List Categories</a></span>
+		<h2>Category <button ng-click="alert('save');save();">Save</button></h2> 
+		<div class="row">
+			<div class="col col-sm-2">Creator:</div><div class="col col-sm-10"><input ng-model="category.creator"></div>
+			<div class="col col-sm-2">Name:</div><div class="col col-sm-10"><input ng-model="category.text"></div>
+			<div class="col col-sm-2">Description:</div><div class="col col-sm-10"><textarea rows="10" cols="50" ng-model="category.description"></textarea></div>
+			<div class="col col-sm-2">Parent Category:</div><div class="col col-sm-10"><input ng-model="category.parent"></div>
+		</div>
+	</div>
+
+	<script type="text/javascript">
+	angular.module("app", ["YouTest"]).controller("ctrl", function($scope, $http, yts) {
+		//yts.alert("You Test Service Loaded");
+		
+		function init(){
+			$scope.category = {};
+		}
+
+		$scope.save = function(){
+			//yts.alert(JSON.stringify(category));
+			//alert(yts.alert);
+			yts.saveCategory(category, 
+				function(data){
+					yts.alert(JSON.stringify("Category Added - " + JSON.stringify(data)));
+					yts.alert("Add another...");
+					init();
+				},
+				function (error) {
+					yts.alert(JSON.stringify(error));
+			    }
+			);
+		};
+		
+		// init;
+		init();
+	});
+	</script>
+</body>
+</html>
